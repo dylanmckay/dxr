@@ -13,10 +13,10 @@ FROM ubuntu@sha256:0ca448cb174259ddb2ae6e213ebebe7590862d522fe38971e1175faedf0b6
 
 MAINTAINER Erik Rose <erik@mozilla.com>
 
-COPY set_up_ubuntu.sh /tmp/
+COPY tooling/docker/scripts/set_up_ubuntu.sh /tmp/
 RUN DEBIAN_FRONTEND=noninteractive /tmp/set_up_ubuntu.sh
 
-COPY set_up_common.sh /tmp/
+COPY tooling/docker/scripts/set_up_common.sh /tmp/
 RUN DEBIAN_FRONTEND=noninteractive /tmp/set_up_common.sh
 
 # Give root a known password so devs can become root:
@@ -28,7 +28,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install graphviz
 
 RUN useradd --create-home --home-dir /home/dxr --shell /bin/bash --groups sudo --uid 1000 dxr
 RUN echo "dxr:docker" | chpasswd
-VOLUME /home/dxr/dxr
+
+# Change ownership of volume mount points so they're accessible
+# to the dxr user. This is not possible via docker-compose.yml.
+RUN mkdir -p /venv && chown dxr:dxr /venv
+RUN mkdir -p /code && chown dxr:dxr /code
+
+COPY ./ /home/dxr/dxr
+RUN chown -R dxr:dxr /home/dxr/dxr
+
 USER dxr
 
 # Activate a virtualenv. make will make it later. Also, set SHELL so mach
@@ -37,5 +45,7 @@ USER dxr
 ENV VIRTUAL_ENV=/venv PATH=/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin SHELL=/bin/bash
 
 WORKDIR /home/dxr/dxr
+
+RUN make all
 
 EXPOSE 8000

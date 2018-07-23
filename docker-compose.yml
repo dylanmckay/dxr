@@ -1,18 +1,16 @@
 # A container that runs elasticsearch. The upstream image has a volume defined,
 # so indexes persist.
 es:
-  build: ./es
+  build: ./tooling/docker/es
   ports:
     - "8000:8000"
 
 # An interactive container for experimentation and debugging
 dev:
-  build: ./dev
+  build: ./
   net: container:es
   ports:
     - "8000:8000"
-  volumes:
-    - ../..:/home/dxr/dxr:Z
   volumes_from:
     - code
     - venv
@@ -22,9 +20,9 @@ dev:
 # but, on a Mac, /code will be more attractive because it offers better IO
 # performance than VirtualBox's shared folder implementation.
 code:
-  build: ./code
+  build: ./tooling/docker/code
 
 # A Data Volume Container so we don't lose our whole virtualenv and need to
 # re-download all the Python packages every time the dev image is rebuilt
 venv:
-  build: ./venv
+  build: ./tooling/docker/venv
