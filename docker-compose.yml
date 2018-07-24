@@ -1,28 +1,44 @@
-# A container that runs elasticsearch. The upstream image has a volume defined,
-# so indexes persist.
-es:
-  build: ./tooling/docker/es
-  ports:
-    - "8000:8000"
+version: '3'
 
-# An interactive container for experimentation and debugging
-dev:
-  build: ./
-  net: container:es
-  ports:
-    - "8000:8000"
-  volumes_from:
-    - code
-    - venv
+services:
+  # A container that runs elasticsearch. The upstream image has a volume defined,
+  # so indexes persist.
+  es:
+    build: ./tooling/docker/es
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - dxr
 
-# A Data Volume Container to persist any code you might care to index. On a
-# Linux host, you can squirrel away code in the shared "dxr" source checkout,
-# but, on a Mac, /code will be more attractive because it offers better IO
-# performance than VirtualBox's shared folder implementation.
-code:
-  build: ./tooling/docker/code
+  # An interactive container for experimentation and debugging
+  dev:
+    build: ./
+    ports:
+      - "8010:8000"
+    networks:
+      - dxr
+    volumes:
+      - /home/dylan/projects/dxr-code:/code
+      # - dxr_code:/code
+      - dxr_venv:/venv
 
-# A Data Volume Container so we don't lose our whole virtualenv and need to
-# re-download all the Python packages every time the dev image is rebuilt
-venv:
-  build: ./tooling/docker/venv
+  # A Data Volume Container to persist any code you might care to index. On a
+  # Linux host, you can squirrel away code in the shared "dxr" source checkout,
+  # but, on a Mac, /code will be more attractive because it offers better IO
+  # performance than VirtualBox's shared folder implementation.
+  code:
+    build: ./tooling/docker/code
+
+  # A Data Volume Container so we don't lose our whole virtualenv and need to
+  # re-download all the Python packages every time the dev image is rebuilt
+  venv:
+    build: ./tooling/docker/venv
+
+networks:
+  dxr:
+
+volumes:
+  dxr_code:
+  dxr_venv:
+

@@ -34,8 +34,7 @@ RUN echo "dxr:docker" | chpasswd
 RUN mkdir -p /venv && chown dxr:dxr /venv
 RUN mkdir -p /code && chown dxr:dxr /code
 
-COPY ./ /home/dxr/dxr
-RUN chown -R dxr:dxr /home/dxr/dxr
+COPY --chown=dxr ./ /home/dxr/dxr
 
 USER dxr
 
@@ -49,3 +48,5 @@ WORKDIR /home/dxr/dxr
 RUN make all
 
 EXPOSE 8000
+
+CMD ["dxr", "serve", "--all", "-c", "/code/dxr.config"]
