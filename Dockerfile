@@ -36,7 +36,6 @@ RUN mkdir -p /code && chown dxr:dxr /code
 
 COPY --chown=dxr ./ /home/dxr/dxr
 COPY --chown=dxr tooling/docker/scripts/start.sh /home/dxr/
-RUN chmod +x /home/dxr/start.sh
 
 USER dxr
 

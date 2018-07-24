@@ -23,18 +23,6 @@ services:
       # - dxr_code:/code
       - dxr_venv:/venv
 
-  # A Data Volume Container to persist any code you might care to index. On a
-  # Linux host, you can squirrel away code in the shared "dxr" source checkout,
-  # but, on a Mac, /code will be more attractive because it offers better IO
-  # performance than VirtualBox's shared folder implementation.
-  code:
-    build: ./tooling/docker/code
-
-  # A Data Volume Container so we don't lose our whole virtualenv and need to
-  # re-download all the Python packages every time the dev image is rebuilt
-  venv:
-    build: ./tooling/docker/venv
-
 networks:
   dxr:
 
