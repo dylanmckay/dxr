@@ -35,6 +35,8 @@ RUN mkdir -p /venv && chown dxr:dxr /venv
 RUN mkdir -p /code && chown dxr:dxr /code
 
 COPY --chown=dxr ./ /home/dxr/dxr
+COPY --chown=dxr tooling/docker/scripts/start.sh /home/dxr/
+RUN chmod +x /home/dxr/start.sh
 
 USER dxr
 
@@ -50,3 +52,4 @@ RUN make all
 EXPOSE 8000
 
 CMD ["dxr", "serve", "--all", "-c", "/code/dxr.config"]
+CMD ["/home/dxr/start.sh"]
