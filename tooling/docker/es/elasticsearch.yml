@@ -3,3 +3,5 @@ network.bind_host: 0.0.0.0
 network.host:      0.0.0.0
 discovery.zen.ping.multicast.enabled: false
 script.disable_dynamic: false
+threadpool.search.queue_size: 50000
+threadpool.index.queue_size: 50000

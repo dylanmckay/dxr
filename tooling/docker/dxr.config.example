@@ -1,0 +1,4 @@
+[DXR]
+# Some global options here, if you like
+es_hosts = http://es:9200/
+

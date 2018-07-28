@@ -10,6 +10,13 @@ services:
       - "9300:9300"
     networks:
       - dxr
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      ES_HEAP_SIZE: 2g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
 
   # An interactive container for experimentation and debugging
   dev:
@@ -21,12 +28,16 @@ services:
     volumes:
       - /home/dylan/projects/dxr-code:/code
       # - dxr_code:/code
+      - dxr_builds:/builds
       - dxr_venv:/venv
+    depends_on:
+      - es
 
 networks:
   dxr:
 
 volumes:
   dxr_code:
+  dxr_builds:
   dxr_venv:
 
